@@ -1,10 +1,6 @@
 node_modules
 dist
 coverage
-.agents
-.claude
-.windsurf
-CLAUDE.md
 
 # Keep environment variables out of version control
 .env
