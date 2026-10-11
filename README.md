@@ -2,7 +2,7 @@
 
 API REST em **Node.js + TypeScript** com autenticação JWT, controle de acesso por perfil (`USER`/`ADMIN`) e bloqueio de usuários com histórico de motivos. Os dados ficam em um **PostgreSQL gerenciado pelo Supabase**, acessado via **Prisma**.
 
-> **Status:** a API (`server/`) está funcional. A orquestração com **Docker** e as automações com **N8N** ainda não foram adicionadas ao repositório.
+> **Status:** a API está funcional. A orquestração com **Docker** e as automações com **N8N** ainda não foram adicionadas ao repositório.
 
 ## Stack
 
@@ -20,17 +20,16 @@ API REST em **Node.js + TypeScript** com autenticação JWT, controle de acesso 
 
 ```
 .
-├── References/            # Documentos de referência (NodeJS-Estrutura.txt = fonte da arquitetura)
-└── server/                # API REST
-    ├── prisma/            # schema.prisma, migrations e seed
-    ├── prisma.config.ts   # Configuração do Prisma CLI (usa DIRECT_URL)
-    └── src/
-        ├── app/             # controllers, services, dtos, validators, mappers, routes
-        ├── domain/          # entities, interfaces (contratos), errors — núcleo puro
-        ├── infrastructure/  # Prisma, repositórios, providers (bcrypt, jwt)
-        ├── shared/          # middlewares, utils, constants, config (env)
-        ├── main/            # composition root: server, app, routes, factories
-        └── tests/           # unit/, integration/, doubles/
+├── references/          # Documentos de referência (NodeJS-EstruturaNodeJS.txt = fonte da arquitetura)
+├── prisma/              # schema.prisma, migrations e seed
+├── prisma.config.ts     # Configuração do Prisma CLI (usa DIRECT_URL)
+└── src/
+    ├── app/             # controllers, services, dtos, validators, mappers, routes, docs
+    ├── domain/          # entities, interfaces (contratos), errors — núcleo puro
+    ├── infrastructure/  # Prisma, repositórios, providers (bcrypt, jwt)
+    ├── shared/          # middlewares, utils, constants, config (env)
+    ├── main/            # composition root: server, app, routes, factories
+    └── tests/           # unit/, integration/, doubles/
 ```
 
 ## Arquitetura
@@ -48,7 +47,7 @@ Route → Controller → Service → Repository (interface) → Database
 - Classes concretas são instanciadas somente em `src/main/factories/`.
 - Erros são centralizados no `error.middleware`, que converte o código do erro em status HTTP.
 
-As regras completas de camadas e nomenclatura estão em [server/CLAUDE.md](server/CLAUDE.md).
+As regras completas de camadas e nomenclatura estão em [CLAUDE.md](CLAUDE.md).
 
 ## Pré-requisitos
 
@@ -58,7 +57,6 @@ As regras completas de camadas e nomenclatura estão em [server/CLAUDE.md](serve
 ## Como rodar
 
 ```bash
-cd server
 npm install
 cp .env.example .env        # preencha as variáveis (ver abaixo)
 npm run prisma:generate     # gera o Prisma Client
@@ -69,7 +67,7 @@ npm run dev                 # http://localhost:3333/api
 
 Verifique se está no ar: `GET http://localhost:3333/health`.
 
-### Variáveis de ambiente (`server/.env`)
+### Variáveis de ambiente (`.env`)
 
 | Variável | Descrição |
 |---|---|
@@ -93,8 +91,6 @@ node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 ```
 
 ## Scripts
-
-Execute dentro de `server/`.
 
 | Comando | O que faz |
 |---|---|
@@ -144,7 +140,7 @@ Prefixo: `/api`. Rotas autenticadas exigem o header `Authorization: Bearer <toke
 
 Com a API rodando, acesse **http://localhost:3333/api/docs**. Para testar rotas protegidas, faça login em `POST /auth/signin`, copie o `accessToken` e cole no botão **Authorize**.
 
-O documento fica em [server/src/app/docs/openapi.document.ts](server/src/app/docs/openapi.document.ts). Os schemas de entrada são gerados a partir dos validators Zod, então a documentação acompanha a validação real.
+O documento fica em [src/app/docs/openapi.document.ts](src/app/docs/openapi.document.ts). Os schemas de entrada são gerados a partir dos validators Zod, então a documentação acompanha a validação real.
 
 ### Exemplo
 
@@ -216,7 +212,6 @@ O nome `app_users` evita confusão com a tabela `auth.users` do Supabase.
 ## Testes
 
 ```bash
-cd server
 npm run typecheck && npm test
 ```
 
